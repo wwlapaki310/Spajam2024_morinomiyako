@@ -1,0 +1,1 @@
+# Spajam2024_morinomiyako
