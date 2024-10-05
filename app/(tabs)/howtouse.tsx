@@ -1,26 +1,42 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { Link, Stack } from "expo-router";
-import AnimatedCircle from "../../components/AnimatedCircle";
+import { Image } from "expo-image";
+
+const Image1 = require("../../assets/images/howtouse.jpg");
+const { width, height } = Dimensions.get("window");
 
 export default function LightScreen() {
   return (
-     <View style={styles.container}>
-      {/* H1スタイル */}
-      <Text style={styles.h1}>This is H1 Heading</Text>
+    <View style={styles.container}>
+      <Text style={styles.h1}>説明ページ</Text>
+      <Text style={styles.h2}>1. 使い方</Text>
+      <Image source={Image1} style={styles.image} />
+      <Text style={styles.paragraph}>
+        暗い部屋で、スマホの画面の明るさをMAXにして、
+        Lightウィンドウに表示される円型の蛍光に、ペットボトルを載せよう！
+        ペットボトルがカラフルに輝き始めるよ！
+      </Text>
 
-      {/* H2スタイル */}
-      <Text style={styles.h2}>This is H2 Heading</Text>
+      <Text style={styles.h2}>2.色の変更方法</Text>
+      <Text style={styles.paragraph}>
+        Settingsページから変更する。（詳細は美濃くんが記載）
+      </Text>
+
+      <Text style={styles.h2}>3.お勧めのペットボトル</Text>
+      <Text style={styles.paragraph}>
+        Settingsページから変更する。（福地くんが記載）
+      </Text>
+
+      <Text style={styles.h2}>4.原理</Text>
+      <Text style={styles.paragraph}>
+        物理学的な観点での説明を記載（福地くんが記載）
+      </Text>
 
       {/* 普通の文章 */}
       <Text style={styles.paragraph}>
-        This is a normal paragraph. Here, you can write longer text, and the style will be smaller and more suitable for body text.
+        This is a normal paragraph. Here, you can write longer text, and the
+        style will be smaller and more suitable for body text.
       </Text>
-
-      {/* 画像の表示 */}
-      <Image
-        source={{ uri: 'https://example.com/your-image.jpg' }} // 画像のURLを指定
-        style={styles.image}
-      />
     </View>
   );
 }
@@ -30,7 +46,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     alignItems: "center",
-    justifyContent: "center",
     padding: 20,
   },
   h1: {
@@ -53,7 +68,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   image: {
-    width: 200, // 画像の幅
+    width: width, // 画像の幅
     height: 200, // 画像の高さ
     borderRadius: 10, // 画像の角を丸くする
     marginTop: 20,

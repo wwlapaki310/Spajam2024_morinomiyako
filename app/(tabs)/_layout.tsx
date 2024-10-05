@@ -38,9 +38,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             /* @tutinfo */
             <Ionicons
-              name={
-                focused ? "information-circle" : "information-circle-outline"
-              }
+              name={focused ? "bulb-sharp" : "bulb-outline"}
               color={color}
               size={24}
             />
@@ -50,13 +48,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="howtouse"
         options={{
-          title: "Howtouse",
+          title: "How to use",
           tabBarIcon: ({ color, focused }) => (
             /* @tutinfo */
             <Ionicons
-              name={
-                focused ? "information-circle" : "information-circle-outline"
-              }
+              name={focused ? "help-circle" : "help-circle-outline"}
               color={color}
               size={24}
             />
@@ -70,9 +66,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             /* @tutinfo */
             <Ionicons
-              name={
-                focused ? "information-circle" : "information-circle-outline"
-              }
+              name={focused ? "settings-sharp" : "settings-outline"}
               color={color}
               size={24}
             />
