@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
     View,
     StyleSheet,
     Dimensions,
     TouchableWithoutFeedback,
     StatusBar,
+    Animated,
 } from 'react-native';
 
 const CircleAnimation = () => {
     const { width, height } = Dimensions.get('window');
     const size = Math.min(width, height) * 0.8;
 
-    const [leftColor, setLeftColor] = useState('black');
-    const [rightColor, setRightColor] = useState('black');
     const [statusBarHidden, setStatusBarHidden] = useState(false);
 
     const ANIMATION_DURATION = 6000; // 各アニメーションの持続時間（ミリ秒）
@@ -20,6 +19,17 @@ const CircleAnimation = () => {
     const getRandomColor = () => {
         return `hsl(${Math.random() * 360}, 100%, 50%)`;
     };
+
+    // 左右の半円の色アニメーション用のAnimated.Valueを作成
+    const leftColorAnim = useRef(new Animated.Value(0)).current;
+    const rightColorAnim = useRef(new Animated.Value(0)).current;
+
+    // 前回と次回の色を保持するための状態を作成
+    const [leftPrevColor, setLeftPrevColor] = useState('black');
+    const [leftNextColor, setLeftNextColor] = useState(getRandomColor());
+
+    const [rightPrevColor, setRightPrevColor] = useState('black');
+    const [rightNextColor, setRightNextColor] = useState(getRandomColor());
 
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -29,11 +39,33 @@ const CircleAnimation = () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-            intervalRef.current = setInterval(() => {
+            const changeColor = () => {
                 const color = getRandomColor();
-                setLeftColor(color);
-                setRightColor(color);
-            }, 500);
+                setLeftPrevColor(leftNextColor);
+                setLeftNextColor(color);
+                setRightPrevColor(rightNextColor);
+                setRightNextColor(color);
+
+                Animated.parallel([
+                    Animated.timing(leftColorAnim, {
+                        toValue: 1,
+                        duration: 500,
+                        useNativeDriver: false,
+                    }),
+                    Animated.timing(rightColorAnim, {
+                        toValue: 1,
+                        duration: 500,
+                        useNativeDriver: false,
+                    }),
+                ]).start(() => {
+                    leftColorAnim.setValue(0);
+                    rightColorAnim.setValue(0);
+                    setLeftPrevColor(color);
+                    setRightPrevColor(color);
+                });
+            };
+
+            intervalRef.current = setInterval(changeColor, 500);
 
             timeoutRef.current = setTimeout(() => {
                 if (intervalRef.current) clearInterval(intervalRef.current);
@@ -50,11 +82,52 @@ const CircleAnimation = () => {
             intervalRef.current = setInterval(() => {
                 if (steps % 2 === 0) {
                     const color = getRandomColor();
-                    setLeftColor(color);
-                    setRightColor(color);
+
+                    setLeftPrevColor(leftNextColor);
+                    setLeftNextColor(color);
+                    setRightPrevColor(rightNextColor);
+                    setRightNextColor(color);
+
+                    Animated.parallel([
+                        Animated.timing(leftColorAnim, {
+                            toValue: 1,
+                            duration: 0,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(rightColorAnim, {
+                            toValue: 1,
+                            duration: 0,
+                            useNativeDriver: false,
+                        }),
+                    ]).start(() => {
+                        leftColorAnim.setValue(0);
+                        rightColorAnim.setValue(0);
+                        setLeftPrevColor(color);
+                        setRightPrevColor(color);
+                    });
                 } else {
-                    setLeftColor('black');
-                    setRightColor('black');
+                    setLeftPrevColor(leftNextColor);
+                    setLeftNextColor('black');
+                    setRightPrevColor(rightNextColor);
+                    setRightNextColor('black');
+
+                    Animated.parallel([
+                        Animated.timing(leftColorAnim, {
+                            toValue: 1,
+                            duration: 0,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(rightColorAnim, {
+                            toValue: 1,
+                            duration: 0,
+                            useNativeDriver: false,
+                        }),
+                    ]).start(() => {
+                        leftColorAnim.setValue(0);
+                        rightColorAnim.setValue(0);
+                        setLeftPrevColor('black');
+                        setRightPrevColor('black');
+                    });
                 }
                 steps++;
                 if (steps >= maxSteps) {
@@ -68,10 +141,36 @@ const CircleAnimation = () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-            intervalRef.current = setInterval(() => {
-                setLeftColor(getRandomColor());
-                setRightColor(getRandomColor());
-            }, 500);
+            const changeColor = () => {
+                // 左半分の色を変更
+                const leftColor = getRandomColor();
+                setLeftPrevColor(leftNextColor);
+                setLeftNextColor(leftColor);
+                // 右半分の色を変更
+                const rightColor = getRandomColor();
+                setRightPrevColor(rightNextColor);
+                setRightNextColor(rightColor);
+
+                Animated.parallel([
+                    Animated.timing(leftColorAnim, {
+                        toValue: 1,
+                        duration: 500,
+                        useNativeDriver: false,
+                    }),
+                    Animated.timing(rightColorAnim, {
+                        toValue: 1,
+                        duration: 500,
+                        useNativeDriver: false,
+                    }),
+                ]).start(() => {
+                    leftColorAnim.setValue(0);
+                    rightColorAnim.setValue(0);
+                    setLeftPrevColor(leftColor);
+                    setRightPrevColor(rightColor);
+                });
+            };
+
+            intervalRef.current = setInterval(changeColor, 500);
 
             timeoutRef.current = setTimeout(() => {
                 if (intervalRef.current) clearInterval(intervalRef.current);
@@ -92,6 +191,17 @@ const CircleAnimation = () => {
     const toggleFullScreen = () => {
         setStatusBarHidden(!statusBarHidden);
     };
+
+    // 左右の半円の背景色をアニメーション化
+    const leftBackgroundColor = leftColorAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [leftPrevColor, leftNextColor],
+    });
+
+    const rightBackgroundColor = rightColorAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [rightPrevColor, rightNextColor],
+    });
 
     const styles = StyleSheet.create({
         container: {
@@ -130,18 +240,18 @@ const CircleAnimation = () => {
             <View style={styles.container}>
                 <StatusBar hidden={statusBarHidden} />
                 <View style={styles.circleContainer}>
-                    <View
+                    <Animated.View
                         style={[
                             styles.halfCircle,
                             styles.leftHalf,
-                            { backgroundColor: leftColor },
+                            { backgroundColor: leftBackgroundColor },
                         ]}
                     />
-                    <View
+                    <Animated.View
                         style={[
                             styles.halfCircle,
                             styles.rightHalf,
-                            { backgroundColor: rightColor },
+                            { backgroundColor: rightBackgroundColor },
                         ]}
                     />
                 </View>
