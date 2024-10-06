@@ -3,7 +3,7 @@ import { Image } from "expo-image";
 import { Audio } from "expo-av";
 import React, { useEffect, useState } from "react";
 
-const PlaceholderImage = require("../../assets/images/background-image2.jpg");
+const PlaceholderImage = require("../../assets/images/background-image3.jpg");
 const { width, height } = Dimensions.get("window");
 
 export default function Index() {
