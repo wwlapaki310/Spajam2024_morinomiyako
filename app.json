@@ -25,7 +25,8 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "rootUrl": "https://wwlapaki310.github.io/Spajam2024_morinomiyako/"
     },
     "plugins": [
       "expo-router"
