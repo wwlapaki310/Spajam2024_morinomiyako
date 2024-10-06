@@ -74,10 +74,12 @@ const CircleAnimation: FC<{ animationDef: AnimationDef }> = ({ animationDef }) =
     );
 
     const minorColor = minor && minor.length > 0
-        ? interpolateColor(
-            minor,
-            minor.map(cv => `hsl(${cv.hue}, 100%, 50%)`)
-        )
+        ? minor.length === 1
+            ? `hsl(${minor[0].hue}, 100%, 50%)`
+            : interpolateColor(
+                minor,
+                minor.map(cv => `hsl(${cv.hue}, 100%, 50%)`)
+            )
         : majorColor;
 
     const toggleFullScreen = () => {
