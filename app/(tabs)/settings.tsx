@@ -22,13 +22,13 @@ export default function SettingsScreen({
       {/* <ColorAnimationUI /> */}
       <AnimationEditor />
 
-      <Text style={styles.text}>焚き火音</Text>
+      {/* <Text style={styles.text}>焚き火音</Text>
       <Switch
         value={isPlaying}
         onValueChange={(value) => setIsPlaying(value)}
         trackColor={{ false: "#767577", true: "#81b0ff" }} // オフとオンのトグル背景色
         thumbColor={isPlaying ? "#f5dd4b" : "#f4f3f4"} // トグルスイッチの色
-      />
+      /> */}
     </View>
   );
 }
