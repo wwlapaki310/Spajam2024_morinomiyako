@@ -21,11 +21,11 @@ export type AnimationDef = {
     minor?: ColorValue[];
 }
 
-const CircleAnimation: FC<{ animationDef: AnimationDef }> = ({ animationDef }) => {
+const CircleAnimation: FC<{ animationDef: AnimationDef, setTabBarHidden: (flag: boolean) => void }> = ({ animationDef, setTabBarHidden }) => {
     const { width, height } = Dimensions.get('window');
     const size = Math.min(width, height) * 0.8;
 
-    const [statusBarHidden, setStatusBarHidden] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     const { duration, music, major, minor } = animationDef;
     const animatedValue = useRef(new Animated.Value(0)).current;
@@ -83,7 +83,8 @@ const CircleAnimation: FC<{ animationDef: AnimationDef }> = ({ animationDef }) =
         : majorColor;
 
     const toggleFullScreen = () => {
-        setStatusBarHidden(!statusBarHidden);
+        setIsFullscreen(!isFullscreen);
+        setTabBarHidden(!isFullscreen);
     };
 
     const styles = StyleSheet.create({
@@ -121,7 +122,7 @@ const CircleAnimation: FC<{ animationDef: AnimationDef }> = ({ animationDef }) =
     return (
         <TouchableWithoutFeedback onPress={toggleFullScreen}>
             <View style={styles.container}>
-                <StatusBar hidden={statusBarHidden} />
+                <StatusBar hidden={isFullscreen} />
                 <View style={styles.circleContainer}>
                     <Animated.View
                         style={[

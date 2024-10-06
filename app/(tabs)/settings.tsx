@@ -16,9 +16,6 @@ export default function SettingsScreen({
     <View style={styles.container}>
       <Text style={styles.h1}>Settings</Text>
       <Text style={styles.h2}>色の変更</Text>
-      <Text style={styles.text}>
-        実装内容を持ってくる。（美濃くん）
-      </Text>
       {/* <ColorAnimationUI /> */}
       <AnimationEditor />
 
