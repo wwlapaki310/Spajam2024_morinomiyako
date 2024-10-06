@@ -33,12 +33,6 @@ export default function LightScreen() {
         <Text style={styles.paragraph}>
           ここで、Iは光の強度、Pは光源のパワー、rは光源からの距離です。スマホの画面から放たれる光がペットボトル内で反射し、多くの方向に光が広がるため、ペットボトルがランタンのように輝きます。また、ペットボトルの内部は、光が屈折や反射する際に、その光の波長によって色が変化するため、カラフルに見える効果が生じます。
         </Text>
-
-        {/* 普通の文章 */}
-        <Text style={styles.paragraph}>
-          This is a normal paragraph. Here, you can write longer text, and the
-          style will be smaller and more suitable for body text.
-        </Text>
       </View>
     </ScrollView>
   );
