@@ -42,7 +42,7 @@ const AnimationEditor: React.FC = () => {
     return (
         <View style={styles.container}>
             {/* Duration Input */}
-            <Text style={styles.label}>Duration</Text>
+            <Text style={styles.label}>Duration[ms]</Text>
             <TextInput
                 style={styles.input}
                 keyboardType="numeric"
