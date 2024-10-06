@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, FC } from 'react';
 import {
     View,
     StyleSheet,
@@ -7,201 +7,82 @@ import {
     StatusBar,
     Animated,
 } from 'react-native';
+// import { Audio } from 'expo-av';
 
-const CircleAnimation = () => {
+type ColorValue = {
+    position: number;
+    hue: number;
+}
+
+export type AnimationDef = {
+    duration: number;
+    music: string;
+    major: ColorValue[];
+    minor?: ColorValue[];
+}
+
+const CircleAnimation: FC<{ animationDef: AnimationDef }> = ({ animationDef }) => {
     const { width, height } = Dimensions.get('window');
     const size = Math.min(width, height) * 0.8;
 
     const [statusBarHidden, setStatusBarHidden] = useState(false);
 
-    const ANIMATION_DURATION = 6000; // 各アニメーションの持続時間（ミリ秒）
+    const { duration, music, major, minor } = animationDef;
+    const animatedValue = useRef(new Animated.Value(0)).current;
 
-    const getRandomColor = () => {
-        return `hsl(${Math.random() * 360}, 100%, 50%)`;
-    };
-
-    // 左右の半円の色アニメーション用のAnimated.Valueを作成
-    const leftColorAnim = useRef(new Animated.Value(0)).current;
-    const rightColorAnim = useRef(new Animated.Value(0)).current;
-
-    // 前回と次回の色を保持するための状態を作成
-    const [leftPrevColor, setLeftPrevColor] = useState('black');
-    const [leftNextColor, setLeftNextColor] = useState(getRandomColor());
-
-    const [rightPrevColor, setRightPrevColor] = useState('black');
-    const [rightNextColor, setRightNextColor] = useState(getRandomColor());
-
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    // const soundRef = useRef<Audio.Sound | null>(null);
 
     useEffect(() => {
-        const seamlessAnimation = () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        const animation = Animated.loop(
+            Animated.timing(animatedValue, {
+                toValue: 1,
+                duration: duration,
+                useNativeDriver: false,
+            })
+        );
 
-            const changeColor = () => {
-                const color = getRandomColor();
-                setLeftPrevColor(leftNextColor);
-                setLeftNextColor(color);
-                setRightPrevColor(rightNextColor);
-                setRightNextColor(color);
-
-                Animated.parallel([
-                    Animated.timing(leftColorAnim, {
-                        toValue: 1,
-                        duration: 500,
-                        useNativeDriver: false,
-                    }),
-                    Animated.timing(rightColorAnim, {
-                        toValue: 1,
-                        duration: 500,
-                        useNativeDriver: false,
-                    }),
-                ]).start(() => {
-                    leftColorAnim.setValue(0);
-                    rightColorAnim.setValue(0);
-                    setLeftPrevColor(color);
-                    setRightPrevColor(color);
-                });
-            };
-
-            intervalRef.current = setInterval(changeColor, 500);
-
-            timeoutRef.current = setTimeout(() => {
-                if (intervalRef.current) clearInterval(intervalRef.current);
-                stepAnimation();
-            }, ANIMATION_DURATION);
+        const playSound = async () => {
+            // const { sound } = await Audio.Sound.createAsync(
+            //     { uri: music },
+            //     { isLooping: true }
+            // );
+            // soundRef.current = sound;
+            // await sound.playAsync();
         };
 
-        const stepAnimation = () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        playSound();
+        animation.start();
 
-            let steps = 0;
-            const maxSteps = ANIMATION_DURATION / 1000;
-            intervalRef.current = setInterval(() => {
-                if (steps % 2 === 0) {
-                    const color = getRandomColor();
-
-                    setLeftPrevColor(leftNextColor);
-                    setLeftNextColor(color);
-                    setRightPrevColor(rightNextColor);
-                    setRightNextColor(color);
-
-                    Animated.parallel([
-                        Animated.timing(leftColorAnim, {
-                            toValue: 1,
-                            duration: 0,
-                            useNativeDriver: false,
-                        }),
-                        Animated.timing(rightColorAnim, {
-                            toValue: 1,
-                            duration: 0,
-                            useNativeDriver: false,
-                        }),
-                    ]).start(() => {
-                        leftColorAnim.setValue(0);
-                        rightColorAnim.setValue(0);
-                        setLeftPrevColor(color);
-                        setRightPrevColor(color);
-                    });
-                } else {
-                    setLeftPrevColor(leftNextColor);
-                    setLeftNextColor('black');
-                    setRightPrevColor(rightNextColor);
-                    setRightNextColor('black');
-
-                    Animated.parallel([
-                        Animated.timing(leftColorAnim, {
-                            toValue: 1,
-                            duration: 0,
-                            useNativeDriver: false,
-                        }),
-                        Animated.timing(rightColorAnim, {
-                            toValue: 1,
-                            duration: 0,
-                            useNativeDriver: false,
-                        }),
-                    ]).start(() => {
-                        leftColorAnim.setValue(0);
-                        rightColorAnim.setValue(0);
-                        setLeftPrevColor('black');
-                        setRightPrevColor('black');
-                    });
-                }
-                steps++;
-                if (steps >= maxSteps) {
-                    if (intervalRef.current) clearInterval(intervalRef.current);
-                    splitAnimation();
-                }
-            }, 1000);
-        };
-
-        const splitAnimation = () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-            const changeColor = () => {
-                // 左半分の色を変更
-                const leftColor = getRandomColor();
-                setLeftPrevColor(leftNextColor);
-                setLeftNextColor(leftColor);
-                // 右半分の色を変更
-                const rightColor = getRandomColor();
-                setRightPrevColor(rightNextColor);
-                setRightNextColor(rightColor);
-
-                Animated.parallel([
-                    Animated.timing(leftColorAnim, {
-                        toValue: 1,
-                        duration: 500,
-                        useNativeDriver: false,
-                    }),
-                    Animated.timing(rightColorAnim, {
-                        toValue: 1,
-                        duration: 500,
-                        useNativeDriver: false,
-                    }),
-                ]).start(() => {
-                    leftColorAnim.setValue(0);
-                    rightColorAnim.setValue(0);
-                    setLeftPrevColor(leftColor);
-                    setRightPrevColor(rightColor);
-                });
-            };
-
-            intervalRef.current = setInterval(changeColor, 500);
-
-            timeoutRef.current = setTimeout(() => {
-                if (intervalRef.current) clearInterval(intervalRef.current);
-                seamlessAnimation();
-            }, ANIMATION_DURATION);
-        };
-
-        // アニメーションを開始
-        seamlessAnimation();
-
-        // クリーンアップ関数
         return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            animation.stop();
+            // if (soundRef.current) {
+            //     soundRef.current.unloadAsync();
+            // }
         };
-    }, []);
+    }, [animatedValue, duration, music]);
+
+    const interpolateColor = (colorValues: ColorValue[], outputRange: string[]) => {
+        return animatedValue.interpolate({
+            inputRange: colorValues.map(cv => cv.position),
+            outputRange: outputRange,
+        });
+    };
+
+    const majorColor = interpolateColor(
+        major,
+        major.map(cv => `hsl(${cv.hue}, 100%, 50%)`)
+    );
+
+    const minorColor = minor && minor.length > 0
+        ? interpolateColor(
+            minor,
+            minor.map(cv => `hsl(${cv.hue}, 100%, 50%)`)
+        )
+        : majorColor;
 
     const toggleFullScreen = () => {
         setStatusBarHidden(!statusBarHidden);
     };
-
-    // 左右の半円の背景色をアニメーション化
-    const leftBackgroundColor = leftColorAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [leftPrevColor, leftNextColor],
-    });
-
-    const rightBackgroundColor = rightColorAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [rightPrevColor, rightNextColor],
-    });
 
     const styles = StyleSheet.create({
         container: {
@@ -244,14 +125,14 @@ const CircleAnimation = () => {
                         style={[
                             styles.halfCircle,
                             styles.leftHalf,
-                            { backgroundColor: leftBackgroundColor },
+                            { backgroundColor: majorColor },
                         ]}
                     />
                     <Animated.View
                         style={[
                             styles.halfCircle,
                             styles.rightHalf,
-                            { backgroundColor: rightBackgroundColor },
+                            { backgroundColor: minorColor },
                         ]}
                     />
                 </View>

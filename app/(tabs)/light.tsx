@@ -1,9 +1,13 @@
-import { Text, View } from "react-native";
-import { Link, Stack } from "expo-router";
+import { useContext } from "react";
+import { DataContext } from "./_layout";
+import AnimatedCircleSample from "../../components/AnimatedCircleSample";
 import AnimatedCircle from "../../components/AnimatedCircle";
 
+
 export default function LightScreen() {
+  const animationDef = useContext(DataContext);
   return (
-    <AnimatedCircle />
+    // <AnimatedCircleSample />
+    <AnimatedCircle animationDef={animationDef} />
   );
 }

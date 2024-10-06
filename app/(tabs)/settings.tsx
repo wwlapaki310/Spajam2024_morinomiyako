@@ -1,4 +1,6 @@
 import { StyleSheet, Text, View, Switch } from "react-native";
+import ColorAnimationUI from "@/components/ColorAnimationUI";
+import AnimationEditor from "@/components/AnimationEditor";
 
 interface SettingsProps {
   isPlaying: boolean;
@@ -9,6 +11,7 @@ export default function SettingsScreen({
   isPlaying,
   setIsPlaying,
 }: SettingsProps) {
+
   return (
     <View style={styles.container}>
       <Text style={styles.h1}>Settings</Text>
@@ -16,6 +19,8 @@ export default function SettingsScreen({
       <Text style={styles.text}>
         実装内容を持ってくる。（美濃くん）
       </Text>
+      {/* <ColorAnimationUI /> */}
+      <AnimationEditor />
 
       <Text style={styles.text}>焚き火音</Text>
       <Switch
