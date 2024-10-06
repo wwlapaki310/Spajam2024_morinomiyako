@@ -7,43 +7,43 @@ const PlaceholderImage = require("../../assets/images/background-image3.jpg");
 const { width, height } = Dimensions.get("window");
 
 export default function Index() {
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
+  // const [sound, setSound] = useState<Audio.Sound | null>(null);
+  // const [isPlaying, setIsPlaying] = useState(true);
 
-  // バックグラウンド再生の設定
-  async function configureAudioMode() {
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      staysActiveInBackground: true, // バックグラウンド再生を有効にする
-      playsInSilentModeIOS: true, // iOSでサイレントモードでも再生
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
-    });
-  }
+  // // バックグラウンド再生の設定
+  // async function configureAudioMode() {
+  //   await Audio.setAudioModeAsync({
+  //     allowsRecordingIOS: false,
+  //     staysActiveInBackground: true, // バックグラウンド再生を有効にする
+  //     playsInSilentModeIOS: true, // iOSでサイレントモードでも再生
+  //     shouldDuckAndroid: true,
+  //     playThroughEarpieceAndroid: false,
+  //   });
+  // }
 
-  // サウンドをロードして再生する関数
-  async function playSound() {
-    const { sound } = await Audio.Sound.createAsync(
-      require("../../assets/music/takibi.mp3"),
-      { shouldPlay: false, isLooping: true } // 自動再生はしない
-    );
-    setSound(sound);
-    if (isPlaying) {
-      await sound.playAsync(); // 明示的に再生する
-    }
-  }
+  // // サウンドをロードして再生する関数
+  // async function playSound() {
+  //   const { sound } = await Audio.Sound.createAsync(
+  //     require("../../assets/music/takibi.mp3"),
+  //     { shouldPlay: false, isLooping: true } // 自動再生はしない
+  //   );
+  //   setSound(sound);
+  //   if (isPlaying) {
+  //     await sound.playAsync(); // 明示的に再生する
+  //   }
+  // }
 
-  useEffect(() => {
-    configureAudioMode(); // 音楽モードを設定
-    playSound(); // 音楽を再生
+  // useEffect(() => {
+  //   configureAudioMode(); // 音楽モードを設定
+  //   playSound(); // 音楽を再生
 
-    // コンポーネントがアンマウントされたときにサウンドを解放
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [isPlaying]);
+  //   // コンポーネントがアンマウントされたときにサウンドを解放
+  //   return sound
+  //     ? () => {
+  //         sound.unloadAsync();
+  //       }
+  //     : undefined;
+  // }, [isPlaying]);
 
   return (
     <View style={styles.container}>
